@@ -1,4 +1,4 @@
-import { rotateToken, setLoginSession, setToken } from "@/services/auth";
+import { clearToken, getAccessToken, rotateToken, setLoginSession, setToken } from "@/services/auth";
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from "axios";
 import { redirect } from "next/navigation"
 
@@ -16,6 +16,12 @@ interface CustomError extends Omit<AxiosError, 'config'> {
 }
 
 function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
+	const accessToken = getAccessToken()
+
+	if (accessToken) {
+		config.headers.Authorization = `Bearer ${accessToken}`
+	}
+
 	return config;
 }
 
@@ -30,6 +36,7 @@ async function onError(error: CustomError): Promise<CustomError> {
 		try {
 			//TODO logout
 			setLoginSession(false)
+			clearToken()
 			window.location.href = '/'
 		} catch (e) {
 			window.location.href = '/'

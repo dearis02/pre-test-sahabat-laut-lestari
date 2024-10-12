@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { clearToken, isUserLoggedIn, setLoginSession } from "@/services/auth";
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useStore } from "@nanostores/react";
 import { $isLoggedIn } from "@/stores/auth";
 
@@ -12,11 +12,13 @@ export default function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const isLogIn = useStore($isLoggedIn)
 
+    const router = useRouter()
+
     function handleLogout() {
         setLoginSession(false)
         clearToken()
 
-        redirect("/")
+        router.push('/login')
     }
 
     useEffect(() => {
@@ -24,8 +26,8 @@ export default function Header() {
     }, [isLoggedIn, isLogIn])
 
     return (
-        <header className="flex items-center justify-between bg-green-500 p-4">
-            <div className="flex items-center space-x-4">
+        <header className="w-full flex items-center justify-between bg-green-500 p-4">
+            <div className="flex items-center space-x-4 hover:cursor-pointer" onClick={() => router.push('/')}>
                 <div className="text-white text-3xl font-bold">Pre-Test</div>
             </div>
             <div className="flex items-center space-x-4">

@@ -1,0 +1,1 @@
+export const DEFAULT_IMAGE_PLACEHOLDER_URL = "https://via.placeholder.com/150"; 

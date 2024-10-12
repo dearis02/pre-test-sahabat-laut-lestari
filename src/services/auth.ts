@@ -42,4 +42,8 @@ function isUserLoggedIn() {
     return $isLoggedIn.value || !!localStorage.getItem("accessToken");
 }
 
-export { useLogin, setLoginSession, setToken, isUserLoggedIn, clearToken, rotateToken };
+function getAccessToken() {
+    return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export { useLogin, setLoginSession, setToken, isUserLoggedIn, clearToken, rotateToken, getAccessToken };

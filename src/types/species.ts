@@ -18,4 +18,22 @@ interface GetAllSpeciesFilter extends PaginationQuery {
   Keyword?: string;
 }
 
-export type { GetAllSpeciesRes, GetAllSpeciesFilter };
+interface CreateSpeciesReq {
+  faoCode: string;
+  typeOfFish: string;
+  scientificName: string;
+  englishName: string;
+  indonesianName: string;
+  localName: string;
+  typeOfWater: string;
+  imageUrl: string;
+  statusInIndonesia: string;
+  fishUtilization: string;
+}
+
+interface UpdateSpeciesReq {
+  id: string;
+  data: CreateSpeciesReq;
+}
+
+export type { GetAllSpeciesRes, GetAllSpeciesFilter, CreateSpeciesReq, UpdateSpeciesReq };
