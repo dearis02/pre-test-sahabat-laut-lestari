@@ -1,5 +1,6 @@
-import { setLoginSession } from "@/services/auth";
+import { rotateToken, setLoginSession, setToken } from "@/services/auth";
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from "axios";
+import { redirect } from "next/navigation"
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
 const instance = axios.create({
@@ -22,7 +23,7 @@ function onResponse(response: AxiosResponse): AxiosResponse {
 	return response.data;
 }
 
-function onError(error: CustomError): Promise<CustomError> {
+async function onError(error: CustomError): Promise<CustomError> {
 	const { config, response } = error
 
 	if (config.retry || (config?.url?.includes('/auth/refresh-token') ?? false)) {
@@ -38,11 +39,17 @@ function onError(error: CustomError): Promise<CustomError> {
 	}
 
 	if (response?.status === 401 && !(config?.url?.includes('/auth/refresh-token') ?? false)) {
-		window.location.href = '/'
+		config.retry = true
+
+		const refreshToken = localStorage.getItem('refreshToken')
+		const res = await rotateToken(refreshToken!)
+
+		setToken(res.accessToken, res.refreshToken)
+		setLoginSession(true)
 	}
 
 	if (response?.status === 404) {
-		// window.location.href = '/404'
+		redirect('/404')
 	}
 
 	const responseStatus = response?.status

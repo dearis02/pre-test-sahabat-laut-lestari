@@ -15,12 +15,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { PaginationData } from "../PaginationData";
 import { GetAllSpeciesFilter } from "@/types/species";
+import { Button } from "../ui/button";
+import Modal from "../Modal";
 
 export default function Home() {
     const [filter, setFilter] = useState<GetAllSpeciesFilter>({
         PageNumber: 1,
         PageSize: 30,
     });
+    const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
 
     const { data, isFetching, refetch } = useFetchAllSpecies(filter);
 
@@ -67,6 +70,10 @@ export default function Home() {
         })
     }
 
+    function handleToggleModal(isOpen: boolean) {
+        setIsOpenCreateModal(isOpen);
+    }
+
     useEffect(() => {
         refetch();
     }, []);
@@ -88,19 +95,22 @@ export default function Home() {
     }, [filter.Keyword, refetch]);
 
     return (
-        <div className="w-full grid place-content-start">
+        <div className="w-full grid place-content-start px-20 my-20">
             <h1 className="font-bold text-4xl mb-20 justify-self-center">Species</h1>
-            <Input type="text" className="w-full max-w-md place-self-start mb-4 border border-black focus:border-none"
-                placeholder="search...."
-                onChange={(e) => setFilter({
-                    ...filter,
-                    Keyword: e.target.value === "" ? undefined : e.target.value,
-                    PageNumber: 1
-                })} />
+            <div className="w-full flex flex-row flex-wrap justify-between">
+                <Input type="text" className="w-full max-w-md place-self-start mb-4 border border-black focus:border-none"
+                    placeholder="search...."
+                    onChange={(e) => setFilter({
+                        ...filter,
+                        Keyword: e.target.value === "" ? undefined : e.target.value,
+                        PageNumber: 1
+                    })} />
+                <Button className="bg-green-400 text-white font-bold hover:bg-green-500" onClick={() => handleToggleModal(true)}>Create</Button>
+            </div>
             <Table className="border border-slate-400 w-full">
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[100px]">No</TableHead>
+                        <TableHead>No</TableHead>
                         <TableHead>Image</TableHead>
                         <TableHead>FAO Code</TableHead>
                         <TableHead>Type of Fish</TableHead>
@@ -150,6 +160,11 @@ export default function Home() {
                 prevPageLink={data?.previousPage ?? null}
                 onPageChange={onPageChange}
             />
+            <Modal isOpen={isOpenCreateModal} modalTitle="Title" toggleModal={handleToggleModal}>
+                <div>
+                    <p>Content</p>
+                </div>
+            </Modal>
         </div>
     );
 }
