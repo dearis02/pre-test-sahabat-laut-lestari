@@ -4,6 +4,12 @@ First, install dependencies:
 npm i
 ```
 
+copy .env.example:
+
+```bash
+cp .env.example .env
+```
+
 then run the development server:
 
 ```bash
